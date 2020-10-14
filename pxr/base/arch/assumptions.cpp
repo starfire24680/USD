@@ -48,7 +48,13 @@ static size_t
 Arch_ObtainCacheLineSize()
 {
 #if defined(ARCH_OS_LINUX)
-    return sysconf(_SC_LEVEL1_DCACHE_LINESIZE);
+    FILE * p = 0;
+    p = fopen("/sys/devices/system/cpu/cpu0/cache/index0/coherency_line_size", "r");
+    unsigned int i = 0;
+    if (p) {
+        fscanf(p, "%d", &i);
+        fclose(p);
+    }
 #elif defined(ARCH_OS_DARWIN)
     size_t cacheLineSize = 0;
     size_t cacheLineSizeSize = sizeof(cacheLineSize);
